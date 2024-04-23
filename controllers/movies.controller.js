@@ -1,121 +1,121 @@
 const db = require("../models");
-const Student = db.students;
+const Movie = db.movies;
 
-// Create and Save a new Student
+// Create and Save a new Movie
 exports.create = (req, res) => {
   // Validate request
-  if (!req.body.name) {
+  if (!req.body.id) {
     res.status(400).send({ message: "Content can not be empty!" });
     return;
   }
-  // Create a Student
-  const student = new Student({
-    name: req.body.name,
-    course: req.body.course,
-    registered: req.body.registered ? req.body.registered : false,
+  // Create a Movie
+  const movie = new Movie({
+    id: req.body.id,
+    title: req.body.title,
+    release: req.body.release ? req.body.release : false,
   });
 
-  // Save Student in the database
-  student
-    .save(student)
+  // Save Movie in the database
+  movie
+    .save(movie)
     .then(data => {
       res.send(data);
     })
     .catch(err => {
       res.status(500).send({
         message:
-          err.message || "Some error occurred while creating the Student.",
+          err.message || "Some error occurred while creating the Movie.",
       });
     });
 };
 
-// Retrieve all Students from the database.
+// Retrieve all Movie from the database.
 exports.findAll = (req, res) => {
-  const name = req.query.name;
-  let condition = name
-    ? { name: { $regex: new RegExp(name), $options: "i" } }
+  const id = req.query.id;
+  let condition = id
+    ? { id: { $regex: new RegExp(id), $options: "i" } }
     : {};
-  Student.find(condition)
+  Movie.find(condition)
     .then(data => {
       res.send(data);
     })
     .catch(err => {
       res.status(500).send({
         message:
-          err.message || "Some error occurred while retrieving students.",
+          err.message || "Some error occurred while retrieving movies.",
       });
     });
 };
 
-// Delete a Student with the specified id in the request
+// Delete a Movie with the specified id in the request
 exports.delete = (req, res) => {
   const id = req.params.id;
-  Student.findByIdAndDelete(id)
+  Movie.findByIdAndDelete(id)
     .then(data => {
       if (!data) {
         res.status(404).send({
-          message: `Cannot delete Student with id=${id}. Maybe Student was not found!`,
+          message: `Cannot delete Movie with id=${id}. Maybe Movie was not found!`,
         });
       } else {
         res.send({
-          message: "Student was deleted successfully!",
+          message: "Movie was deleted successfully!",
         });
       }
     })
 .catch(err => {
       res.status(500).send({
-        message: "Could not delete Student with id=" + id,
+        message: "Could not delete Movie with id=" + id,
       });
     });
 };
 
-// Delete all Students from the database.
+// Delete all Movies from the database.
 exports.deleteAll = (req, res) => {
-  Student.deleteMany({})
+  Movie.deleteMany({})
     .then(data => {
       res.send({
-        message: `${data.deletedCount} Students were deleted successfully!`,
+        message: `${data.deletedCount} Movies were deleted successfully!`,
       });
     })
     .catch(err => {
       res.status(500).send({
         message:
-          err.message || "Some error occurred while removing all students.",
+          err.message || "Some error occurred while removing all Movies.",
       });
     });
 };
 
-// Find a single Student with an id
+// Find a single Movie with an id
 exports.findOne = (req, res) => {
   const id = req.params.id;
-  Student.findById(id)
+  Movie.findById(id)
     .then(data => {
       if (!data)
-        res.status(404).send({ message: "Not found Student with id " + id });
+        res.status(404).send({ message: "Not found Movie with id " + id });
       else res.send(data);
     })
     .catch(err => {
       res
         .status(500)
-        .send({ message: "Error retrieving Student with id=" + id });
+        .send({ message: "Error retrieving Movie with id=" + id });
     });
 };
 
-// Find all registered Students
+// Find all registered Movie
 exports.findAllRegistered = (req, res) => {
-  Student.find({ registered: true })
+  Movie.find({ registered: true })
     .then(data => {
       res.send(data);
     })
     .catch(err => {
       res.status(500).send({
         message:
-          err.message || "Some error occurred while retrieving students.",
+          err.message || "Some error occurred while retrieving Movies.",
       });
     });
 };
 
-// Update a Student by the id in the request
+// Update a Movie by the id in the request
 exports.update = (req, res) => {
   if (!req.body) {
     return res.status(400).send({
@@ -123,17 +123,17 @@ exports.update = (req, res) => {
     });
   }
   const id = req.params.id;
-  Student.findByIdAndUpdate(id, req.body, { useFindAndModify: false })
+  Movie.findByIdAndUpdate(id, req.body, { useFindAndModify: false })
     .then(data => {
       if (!data) {
         res.status(404).send({
-          message: `Cannot update Student with id=${id}. Maybe Student was not found!`,
+          message: `Cannot update Student with id=${id}. Maybe Movie was not found!`,
         });
-      } else res.send({ message: "Student was updated successfully." });
+      } else res.send({ message: "Movie was updated successfully." });
     })
     .catch(err => {
       res.status(500).send({
-        message: "Error updating Student with id=" + id,
+        message: "Error updating Movie with id=" + id,
       });
     });
 };
